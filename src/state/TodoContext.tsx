@@ -1,4 +1,4 @@
-import { createContext, useContext, useEffect, useMemo, useReducer } from 'react';
+import { createContext, useContext, useEffect, useMemo, useReducer, type ReactNode } from 'react';
 import { FilterState, SortDir, SortKey, TodoDraft, TodoItem } from '../types';
 import { applyFilters, createTodo, sortTodos, updateTodo } from '../utils/todoUtils';
 
@@ -47,7 +47,7 @@ const TodoContext = createContext<TodoContextValue | null>(null);
 
 const STORAGE_KEY = 'advanced_todos_v1';
 
-export function TodoProvider({ children }: { children: React.ReactNode }) {
+export function TodoProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(reducer, { items: [] });
 
   // Hydrate from localStorage

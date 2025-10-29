@@ -80,4 +80,17 @@ export function sortTodos(todos: TodoItem[], key: SortKey, dir: SortDir): TodoIt
   return sorted;
 }
 
+export function getPriorityLabel(priority: Priority): string {
+  switch (priority) {
+    case 'low':
+      return 'низкий';
+    case 'medium':
+      return 'средний';
+    case 'high':
+      return 'высокий';
+    default:
+      return priority;
+  }
+}
+
 
