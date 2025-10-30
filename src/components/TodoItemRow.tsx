@@ -13,20 +13,28 @@ export function TodoItemRow({ id }: TodoItemRowProps) {
   const todo = state.items.find((t) => t.id === id);
 
   const [isEditing, setIsEditing] = useState(false);
-  const [title, setTitle] = useState(todo?.title || '');
-  const [dueDate, setDueDate] = useState<string>('');
-  const [tagsInput, setTagsInput] = useState('');
-  const [priority, setPriority] = useState<Priority>(todo?.priority || DEFAULT_PRIORITY);
 
-  // Sync form state when todo or editing state changes
+  // Initialize form state from todo data
+  const initialFormState = {
+    title: todo?.title || '',
+    dueDate: todo?.dueDate || '',
+    tagsInput: todo?.tags.join(', ') || '',
+    priority: (todo?.priority || DEFAULT_PRIORITY) as Priority,
+  };
+
+  const [title, setTitle] = useState(initialFormState.title);
+  const [dueDate, setDueDate] = useState(initialFormState.dueDate);
+  const [tagsInput, setTagsInput] = useState(initialFormState.tagsInput);
+  const [priority, setPriority] = useState(initialFormState.priority);
+
+  // Sync form state when entering edit mode
   useEffect(() => {
-    if (!todo) return;
-    if (isEditing) {
-      setTitle(todo.title);
-      setDueDate(todo.dueDate || '');
-      setTagsInput(todo.tags.join(', '));
-      setPriority(todo.priority);
-    }
+    if (!todo || !isEditing) return;
+
+    setTitle(todo.title);
+    setDueDate(todo.dueDate || '');
+    setTagsInput(todo.tags.join(', '));
+    setPriority(todo.priority);
   }, [todo, isEditing]);
 
   const handleSave = useCallback(() => {
@@ -140,9 +148,9 @@ export function TodoItemRow({ id }: TodoItemRowProps) {
               value={priority}
               onChange={(e) => setPriority(e.target.value as Priority)}
             >
-              {PRIORITY_OPTIONS.map((option) => (
-                <option key={option.value} value={option.value}>
-                  {option.label}
+              {PRIORITY_OPTIONS.map(({ value, label }) => (
+                <option key={value} value={value}>
+                  {label}
                 </option>
               ))}
             </select>

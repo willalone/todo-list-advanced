@@ -33,7 +33,7 @@ export function TodoCreateForm() {
   }, [title, dueDate, tagsInput, priority, add]);
 
   const handleKeyDown = useCallback(
-    (e: React.KeyboardEvent) => {
+    (e: React.KeyboardEvent<HTMLInputElement>) => {
       if (e.key === 'Enter') {
         e.preventDefault();
         handleSubmit();
@@ -42,34 +42,54 @@ export function TodoCreateForm() {
     [handleSubmit]
   );
 
+  const handleTitleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value),
+    []
+  );
+
+  const handleDueDateChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setDueDate(e.target.value),
+    []
+  );
+
+  const handleTagsChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setTagsInput(e.target.value),
+    []
+  );
+
+  const handlePriorityChange = useCallback(
+    (e: React.ChangeEvent<HTMLSelectElement>) => setPriority(e.target.value as Priority),
+    []
+  );
+
   return (
     <div className="inputRow" role="form" aria-label="Создать задачу">
       <input
         aria-label="Название задачи"
         placeholder="Что нужно сделать?"
         value={title}
-        onChange={(e) => setTitle(e.target.value)}
+        onChange={handleTitleChange}
         onKeyDown={handleKeyDown}
       />
       
       <input
-        aria-label="Срок"
         type="date"
+        aria-label="Срок"
         value={dueDate}
-        onChange={(e) => setDueDate(e.target.value)}
+        onChange={handleDueDateChange}
       />
       
       <input
         aria-label="Теги"
         placeholder="теги, через, запятую"
         value={tagsInput}
-        onChange={(e) => setTagsInput(e.target.value)}
+        onChange={handleTagsChange}
       />
       
       <select
         aria-label="Приоритет"
         value={priority}
-        onChange={(e) => setPriority(e.target.value as Priority)}
+        onChange={handlePriorityChange}
       >
         {PRIORITY_OPTIONS.map((option) => (
           <option key={option.value} value={option.value}>

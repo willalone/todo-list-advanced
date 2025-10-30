@@ -27,6 +27,9 @@ export default [
         window: 'readonly',
         localStorage: 'readonly',
         React: 'readonly',
+        HTMLInputElement: 'readonly',
+        HTMLSelectElement: 'readonly',
+        HTMLTextAreaElement: 'readonly',
       },
     },
     plugins: {

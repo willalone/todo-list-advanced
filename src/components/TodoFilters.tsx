@@ -19,37 +19,36 @@ export function TodoFilters({
   onSortChange,
   availableTags,
 }: TodoFiltersProps) {
-  const handleQueryChange = useCallback(
-    (value: string) => {
-      onFiltersChange({ ...filters, query: value });
+  const updateFilter = useCallback(
+    (key: keyof FilterState, value: unknown) => {
+      onFiltersChange({ ...filters, [key]: value });
     },
     [filters, onFiltersChange]
+  );
+
+  const handleQueryChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => updateFilter('query', e.target.value),
+    [updateFilter]
   );
 
   const handleStatusChange = useCallback(
-    (value: string) => {
-      onFiltersChange({ ...filters, status: value as FilterState['status'] });
-    },
-    [filters, onFiltersChange]
+    (e: React.ChangeEvent<HTMLSelectElement>) => updateFilter('status', e.target.value),
+    [updateFilter]
   );
 
   const handleTagChange = useCallback(
-    (value: string) => {
-      onFiltersChange({ ...filters, tag: value || undefined });
-    },
-    [filters, onFiltersChange]
+    (e: React.ChangeEvent<HTMLSelectElement>) => updateFilter('tag', e.target.value || undefined),
+    [updateFilter]
   );
 
   const handlePriorityChange = useCallback(
-    (value: string) => {
-      onFiltersChange({ ...filters, priority: value as FilterState['priority'] });
-    },
-    [filters, onFiltersChange]
+    (e: React.ChangeEvent<HTMLSelectElement>) => updateFilter('priority', e.target.value),
+    [updateFilter]
   );
 
   const handleSortChange = useCallback(
-    (value: string) => {
-      const [key, dir] = value.split(':') as [SortKey, SortDir];
+    (e: React.ChangeEvent<HTMLSelectElement>) => {
+      const [key, dir] = e.target.value.split(':') as [SortKey, SortDir];
       onSortChange(key, dir);
     },
     [onSortChange]
@@ -62,13 +61,13 @@ export function TodoFilters({
         aria-label="Поиск"
         placeholder="Поиск по названию, заметкам и тегам"
         value={filters.query}
-        onChange={(e) => handleQueryChange(e.target.value)}
+        onChange={handleQueryChange}
       />
 
       <select
         aria-label="Фильтр по статусу"
         value={filters.status}
-        onChange={(e) => handleStatusChange(e.target.value)}
+        onChange={handleStatusChange}
       >
         {STATUS_OPTIONS.map((option) => (
           <option key={option.value} value={option.value}>
@@ -77,11 +76,7 @@ export function TodoFilters({
         ))}
       </select>
 
-      <select
-        aria-label="Фильтр по тегу"
-        value={filters.tag ?? ''}
-        onChange={(e) => handleTagChange(e.target.value)}
-      >
+      <select aria-label="Фильтр по тегу" value={filters.tag ?? ''} onChange={handleTagChange}>
         <option value="">Все теги</option>
         {availableTags.map((tag) => (
           <option key={tag} value={tag}>
@@ -93,7 +88,7 @@ export function TodoFilters({
       <select
         aria-label="Фильтр по приоритету"
         value={filters.priority ?? 'all'}
-        onChange={(e) => handlePriorityChange(e.target.value)}
+        onChange={handlePriorityChange}
       >
         <option value="all">Любой приоритет</option>
         {PRIORITY_OPTIONS.map((option) => (
@@ -106,7 +101,7 @@ export function TodoFilters({
       <select
         aria-label="Сортировка"
         value={`${sortKey}:${sortDir}`}
-        onChange={(e) => handleSortChange(e.target.value)}
+        onChange={handleSortChange}
       >
         {SORT_OPTIONS.map((option) => (
           <option key={option.value} value={option.value}>
